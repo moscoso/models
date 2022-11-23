@@ -1,0 +1,6 @@
+{
+	"extension": [".ts"],
+	"exclude": [
+		"**/*.spec.ts"
+	]
+}
