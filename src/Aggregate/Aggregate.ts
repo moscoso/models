@@ -59,7 +59,7 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
         event.aggregateID = this.id;
         event.eventNumber = this.events.length;
         this.state = this.reduce(this.state, event);
-		this.eventEmitter.emit(event.type, event);
+		this.eventEmitter.emit(event.type ?? 'unknown', event);
         return this.state;
     }
 
