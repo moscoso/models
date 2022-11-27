@@ -10,7 +10,7 @@
     /**
      * Extra detail to give insight to why a certain Error is happening right now.
      */
-    private detail ? : string;
+    protected detail ? : string;
 
     /**
      *
