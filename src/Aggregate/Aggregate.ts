@@ -31,7 +31,7 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
     /**
      * The reducer used to calculate the state of the aggregate for each new event
      */
-    protected reducer: (state: V, event: T) => V;
+    protected reducer: (event: T, state: V) => V;
     /**
      * The events that constitute the aggregate
      */
@@ -42,7 +42,7 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
      */
     protected eventEmitter: EventEmitter = new EventEmitter();
 
-    constructor(aggregateID: string, initialState: V, reducer: (state: V, event: T) => V) {
+    constructor(aggregateID: string, initialState: V, reducer: (event: T, state: V) => V) {
         this.id = aggregateID;
 		this.initialState = initialState;
         this.state = initialState;
@@ -69,7 +69,7 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
      * @param event an App Event
      */
     public reduce(state: V, event: T): V {
-        return this.reducer(state, event);
+        return this.reducer(event, state);
     }
 
     /**
