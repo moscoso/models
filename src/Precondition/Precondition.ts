@@ -36,7 +36,7 @@ export class Precondition {
 	public static validateArgsAreDefined(args: any, argNames: string[]): AppError<string> | undefined {
 		const missingArgs = argNames.filter(argName => args[argName] == null);
 		if (missingArgs.length) {
-			const error = new AppError('Undefined arguments were passed into the command');
+			const error = new AppError(`Undefined arguments were passed into the command: ${missingArgs}`);
 			error.setDetail(`${missingArgs} was undefined`);
 			return error;
 		}
