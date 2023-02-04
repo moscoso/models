@@ -8,6 +8,15 @@ import { AppError } from '../AppError/AppError';
 export type PreconditionValidator<E extends Error> = (args: any) => E | null;
 
 /**
+ * A {@link ConfigurablePreconditionValidator} is a higher order function that uses parameters
+ * to configure the validation logic of a {@link PreconditionValidator}.
+ *
+ * @param params any parameters that will be used to configure the validation logic of the {@link PreconditionValidator}.
+ * @returns A {@link PreconditionValidator} function that can be used to validate prerequisites.
+ * */
+export type ConfigurablePreconditionValidator<P extends PreconditionValidator<any>> = (...params: any[]) => P;
+
+/**
  * A utility class to help validate preconditions for a Command
  */
 export class Precondition {
