@@ -2,9 +2,12 @@
  * An AppError is an error thrown in the context specific to our application.
  */
  export class AppError<T extends string> extends Error {
+	protected type = 'AppError';
+	public reason: T | string;
+
     constructor(message: T | string) {
         super(message);
-        this.name = 'AppError';
+        this.reason = message;
     }
 
     /**
