@@ -1,9 +1,6 @@
 import { deepCopy } from './DeepCopy';
 
-/**
-* The de-facto unbiased shuffle algorithm is the Fisher-Yates (aka Knuth) Shuffle.
-*
-*/
+/** The de-facto unbiased shuffle algorithm is the Fisher-Yates (aka Knuth) Shuffle. */
 export function shuffle(items: any[]): any[] {
 	const array = deepCopy(items);
 	let currentIndex: number = array.length;
