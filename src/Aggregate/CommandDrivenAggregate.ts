@@ -20,16 +20,13 @@ export class CommandDrivenAggregate<
     S extends object,
     C extends Command<Result<E, any>>,
 > extends Aggregate<E, S> {
-    private commandFactory: (commandType: C, args: any) => any;
 
     constructor(
         id: string,
         initialState: S,
         reducer: (event: E, state: S) => S,
-        commandFactory: any,
     ) {
         super(id, initialState, reducer);
-        this.commandFactory = commandFactory;
     }
 
 	/**
@@ -40,14 +37,11 @@ export class CommandDrivenAggregate<
 	 * @param args
 	 * @returns
 	 */
-    public executeCommand(command: Command<Result<E, any>>, args: any = {}): Result<E, any> {
+    public executeCommand(command: C): Result<E, any> {
         const result = command.execute();
         if (result.isSuccess) {
             const event = result.value!;
             this.addEvent(event);
-            setImmediate(() => this.emitter.emit('Update', { aggregate: this, event, state: this.state }));
-        } else {
-            setImmediate(() => this.emitter.emit('Error', { args, error: result.error! }));
         }
         return result;
     }

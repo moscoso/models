@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import { AppEvent } from '../AppEvent/AppEvent';
-import { newAggregateEmitter } from './AggregateEmitter';
 
 /**
  * An aggregate is a single-unit entity composed by a series of state-changing events.
@@ -41,7 +40,6 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
     /**
      * An event emitter that a listener can use to react to events
      */
-    protected eventEmitter = newAggregateEmitter<E, S>();
 
     constructor(aggregateID: string, initialState: S, reducer: (event: E, state: S) => S) {
         this.id = aggregateID;
@@ -60,7 +58,6 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
         event.aggregateID = this.id;
         event.eventNumber = this.events.length;
         this.currentState = this.reduce(this.state, event);
-		this.eventEmitter.emit('Update', { event, state: this.currentState});
         return this.state;
     }
 
