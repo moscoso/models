@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { AppEvent } from '../AppEvent/AppEvent';
+import { newAggregateEmitter } from './AggregateEmitter';
 
 /**
  * An aggregate is a single-unit entity composed by a series of state-changing events.
@@ -9,13 +10,13 @@ import { AppEvent } from '../AppEvent/AppEvent';
  * The current state of the entity is populated (and can be re-hydrated) by sequential
  * application of the event stream.
  *
- * In other words, a series of events <T> are reduced to a
- * snapshot that is the current state of the object <V>.
+ * In other words, a series of events <E> are reduced to a
+ * snapshot that is the current state of the object <S>.
  *
- * @param <T> The events that are the constituents of the aggregate
- * @param <V> The interface that represents the current state of the aggregate
+ * @param <E> The events that are the constituents of the aggregate
+ * @param <S> The interface that represents the current state of the aggregate
  */
-export class Aggregate < T extends AppEvent < string, any >, V > {
+export class Aggregate < E extends AppEvent < string, any >, S > {
     /**
      * A unique identifier for the aggregate
      */
@@ -23,29 +24,29 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
     /**
      * The initial state of the aggregate
      */
-    protected initialState: V;
+    protected initialState: S;
     /**
      * The current state of the aggregate
      */
-    protected state: V;
+    protected currentState: S;
     /**
      * The reducer used to calculate the state of the aggregate for each new event
      */
-    protected reducer: (event: T, state: V) => V;
+    protected reducer: (event: E, state: S) => S;
     /**
      * The events that constitute the aggregate
      */
-    protected events: T[] = [];
+    protected events: E[] = [];
 
     /**
      * An event emitter that a listener can use to react to events
      */
-    protected eventEmitter: EventEmitter = new EventEmitter();
+    protected eventEmitter = newAggregateEmitter<E, S>();
 
-    constructor(aggregateID: string, initialState: V, reducer: (event: T, state: V) => V) {
+    constructor(aggregateID: string, initialState: S, reducer: (event: E, state: S) => S) {
         this.id = aggregateID;
 		this.initialState = initialState;
-        this.state = initialState;
+        this.currentState = initialState;
         this.reducer = reducer;
     }
 
@@ -54,12 +55,12 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
      * @param event an App Event
      * @returns the state of the aggregate
      */
-    public addEvent(event: T): V {
+    public addEvent(event: E): S {
         this.events.push(event);
         event.aggregateID = this.id;
         event.eventNumber = this.events.length;
-        this.state = this.reduce(this.state, event);
-		this.eventEmitter.emit(event.type ?? 'unknown', event);
+        this.currentState = this.reduce(this.state, event);
+		this.eventEmitter.emit('Update', { event, state: this.currentState});
         return this.state;
     }
 
@@ -68,29 +69,22 @@ export class Aggregate < T extends AppEvent < string, any >, V > {
      * @param state a state of the Aggregate
      * @param event an App Event
      */
-    public reduce(state: V, event: T): V {
+    public reduce(state: S, event: E): S {
         return this.reducer(event, state);
     }
 
     /**
      * Get the current state of the aggregate
      */
-    public getState(): V {
-        return this.state;
-    }
-
-    /**
-     * Get the event emitter that a listener can use to react to events
-     */
-    public getEventEmitter(): EventEmitter {
-        return this.eventEmitter;
+    public get state(): S {
+        return this.currentState;
     }
 
 	/**
 	 * Reset the aggregate to the initial state and clear the event list
 	 */
     reset() {
-        this.state = this.initialState;
+        this.currentState = this.initialState;
 		this.events = [];
     }
 }
