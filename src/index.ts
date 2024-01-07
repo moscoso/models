@@ -1,4 +1,4 @@
-export * from './Aggregate/Aggregate';
+export * from './Aggregate';
 export * from './AppError/AppError';
 export * from './AppEvent/AppEvent';
 export * from './Command/Command';
