@@ -1,9 +1,10 @@
-export { deepCopy } from './DeepCopy';
-export { Delta } from './Delta/Delta';
-export { enumKeys } from './Enum';
-export { isAPositiveNumber } from './isAPositiveNumber';
-export { modulo } from './Modulo';
+export * from './DeepCopy';
+export * from './Delta/Delta';
+export * from './Enum';
+export * from './isAPositiveNumber';
+export * from './Modulo';
+export * from './Object';
 export * from './rxjs/Operators/Operators';
 export * from './rxjs/Predicates/Predicates';
-export { shuffle } from './Shuffle';
+export * from './Shuffle';
 export * from './ValidID';
