@@ -20,11 +20,10 @@ export class CommandDrivenAggregate<
     S extends object,
     C extends Command<Result<E, any>>,
 > extends Aggregate<E, S> {
-
     constructor(
         id: string,
         initialState: S,
-        reducer: (event: E, state: S) => S,
+        reducer: (event: E, state: S) => S
     ) {
         super(id, initialState, reducer);
     }
@@ -33,9 +32,9 @@ export class CommandDrivenAggregate<
 	 * Upon successful execution of a command, an event is generated and added to the {@link Aggregate}.
  	 * This event is then used to mutate the state of the aggregate.
 	 * In case of command failure, an error event is emitted.
-	 * @param commandType
-	 * @param args
-	 * @returns
+	 * @param commandType the type of command to execute
+	 * @param args params for the command
+	 * @returns a {@link Result}
 	 */
     public executeCommand(command: C): Result<E, any> {
         const result = command.execute();
