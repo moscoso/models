@@ -1,3 +1,4 @@
+import { AppError } from '../AppError/AppError';
 import { AppEvent } from '../AppEvent/AppEvent';
 import { Command } from '../Command/Command';
 import { Result } from '../Result/Result';
@@ -40,7 +41,12 @@ export class CommandDrivenAggregate<
         const result = command.execute();
         if (result.isSuccess) {
             const event = result.value!;
-            this.addEvent(event);
+			try {
+				this.addEvent(event);
+			} catch (reason: any) {
+				console.error(reason);
+				return Result.fail(reason);
+			}
         }
         return result;
     }
