@@ -58,7 +58,7 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
         event.aggregateID = this.id;
         event.eventNumber = this.events.length;
         this.currentState = this.reduce(this.state, event);
-        return this.state;
+        return this.currentState;
     }
 
     /**
