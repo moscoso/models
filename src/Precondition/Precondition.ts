@@ -68,7 +68,6 @@ export function validate<E extends Error>(preconditions: PreconditionValidator<E
 	return null;
 }
 
-
 /**
  * Validates that all the args are defined
  * @param args an object with presumably all the properties specified by `argNames`
