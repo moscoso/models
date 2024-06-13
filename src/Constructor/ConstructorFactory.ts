@@ -16,7 +16,8 @@ export class ConstructorFactory<C extends ConstructorIndex> {
      */
     public get<T extends keyof C>(type: T, params: ConstructorParams<C[T]>): InstanceType<C[T]> {
         const Class = this.constructors[type];
-        return new Class(params);
+		const name = Class.name;
+        return new Class(name, params);
     }
 
     /**

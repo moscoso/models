@@ -8,7 +8,7 @@ export type Constructor<T = any> = new (...args: any[]) => T;
 export type ConstructorIndex = Record<string, new (...args: any) => any>;
 
 /**
- * Utility type to extract the type of a constructors first parameter
+ * Utility type to extract the type of a constructors second parameter
  * @type T - The constructor to extract parameters from
  */
-export type ConstructorParams<T extends Constructor> = ConstructorParameters<T>[0];
+export type ConstructorParams<T extends Constructor> = ConstructorParameters<T>[1];
