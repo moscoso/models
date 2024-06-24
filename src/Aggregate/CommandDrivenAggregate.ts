@@ -1,4 +1,3 @@
-import { AppError } from '../AppError/AppError';
 import { AppEvent } from '../AppEvent/AppEvent';
 import { Command } from '../Command/Command';
 import { Result } from '../Result/Result';
@@ -19,7 +18,7 @@ import { Aggregate } from './Aggregate';
 export class CommandDrivenAggregate<
     E extends AppEvent<string, any>,
     S extends object,
-    C extends Command<Result<E, any>>,
+    C extends Command<Result<E[], any>>,
 > extends Aggregate<E, S> {
     constructor(
         id: string,
@@ -30,20 +29,30 @@ export class CommandDrivenAggregate<
     }
 
 	/**
-	 * Upon successful execution of a command, an event is generated and added to the {@link Aggregate}.
- 	 * This event is then used to mutate the state of the aggregate.
+	 * Upon successful execution of a command, events are generated and added to the {@link Aggregate}.
+ 	 * These events are applied one at at ime to mutate the state of the aggregate.
 	 * In case of command failure, an error event is emitted.
 	 * @param commandType the type of command to execute
 	 * @param args params for the command
 	 * @returns a {@link Result}
 	 */
-    public executeCommand(command: C): Result<E, any> {
+    public executeCommand(command: C): Result<E[], any> {
         const result = command.execute();
         if (result.isSuccess) {
-            const event = result.value!;
+            const events = result.value!;
+			if (events.length === 0) {
+				return Result.fail(new Error('Failed to execute command. It returned 0 events which is invalid'));
+			}
+			const initialLength = this.events.length;
+			const initialState = this.currentState;
 			try {
-				this.addEvent(event);
+				events.forEach(event => {
+					this.addEvent(event);
+				});
 			} catch (reason: any) {
+				// In case of an error, revert aggregate to its original state
+				this.events = this.events.slice(0, initialLength);
+				this.currentState = initialState;
 				console.error(reason);
 				return Result.fail(reason);
 			}
