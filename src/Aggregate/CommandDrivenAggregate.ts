@@ -31,15 +31,22 @@ export class CommandDrivenAggregate<
 	/**
 	 * Upon successful execution of a command, events are generated and added to the {@link Aggregate}.
  	 * These events are applied one at at ime to mutate the state of the aggregate.
-	 * In case of command failure, an error event is emitted.
+	 * In case of command or reducer error, a failure Result is returned.
 	 * @param commandType the type of command to execute
 	 * @param args params for the command
 	 * @returns a {@link Result}
 	 */
     public executeCommand(command: C): Result<E[], any> {
-        const result = command.execute();
-        if (result.isSuccess) {
-            const events = result.value!;
+		let result;
+		try {
+			result = command.execute();
+		} catch (reason: any) {
+			console.error(reason);
+			return Result.fail(reason);
+		}
+
+		if (result?.isSuccess) {
+			const events = result.value!;
 			if (events.length === 0) {
 				return Result.fail(new Error('Failed to execute command. It returned 0 events which is invalid'));
 			}
@@ -56,7 +63,8 @@ export class CommandDrivenAggregate<
 				console.error(reason);
 				return Result.fail(reason);
 			}
-        }
+		}
+
         return result;
     }
 }
