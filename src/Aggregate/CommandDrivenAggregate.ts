@@ -1,6 +1,6 @@
 import { AppEvent } from '../AppEvent/AppEvent';
 import { Command } from '../Command/Command';
-import { Result } from '../Result/Result';
+import { fail, Result } from '../Result/Result';
 import { Aggregate } from './Aggregate';
 
 /**
@@ -42,13 +42,13 @@ export class CommandDrivenAggregate<
 			result = command.execute();
 		} catch (reason: any) {
 			console.error(reason);
-			return Result.fail(reason);
+			return fail(reason);
 		}
 
 		if (result?.isSuccess) {
-			const events = result.value!;
+			const events = result.value;
 			if (events.length === 0) {
-				return Result.fail(new Error('Failed to execute command. It returned 0 events which is invalid'));
+				return fail(new Error('Failed to execute command. It returned 0 events which is invalid'));
 			}
 			const initialLength = this.events.length;
 			const initialState = this.currentState;
@@ -61,7 +61,7 @@ export class CommandDrivenAggregate<
 				this.events = this.events.slice(0, initialLength);
 				this.currentState = initialState;
 				console.error(reason);
-				return Result.fail(reason);
+				return fail(reason);
 			}
 		}
 

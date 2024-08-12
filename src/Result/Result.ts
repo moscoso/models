@@ -1,65 +1,68 @@
 /**
- * A {@link Result} is an an outcome that returns a value of type T if it is successful;
+ * Represents a successful result with a value of type T.
  *
- * Otherwise it fails and returns an Error.
+ * @template T - The type of the successful result value.
  */
-export class Result < T, E extends Error > {
-    public isSuccess: boolean;
-    public isFailure: boolean;
-    public error: E | undefined;
-    private _value: T | undefined;
+interface SuccessResult<T> {
+	value: T;
+	error: undefined;
+	isSuccess: true;
+	isFailure: false;
+}
 
-    /**
-     * Return a successful Result of type T.
-     * @param value returned by a successful Result
-     */
-    public static ok < T, E extends Error > (value ? : T): Result < T, E > {
-        return new Result < T, E >(true, value);
-    }
+/**
+ * Represents a failure result with an error of type E.
+ *
+ * @template E - The type of the error.
+ */
+interface FailureResult<E extends Error> {
+	error: E;
+	value: undefined;
+	isFailure: true;
+	isSuccess: false;
+}
 
-    /**
-     * Return a failing Result with an Error that specifies why it failed.
-     * @param error returned by a failed result
-     */
-    public static fail < T, E extends Error > (error: E): Result < T, E > {
-        return new Result < T, E >(false, undefined, error);
-    }
+/**
+ * A union type that represents either a successful result with a value of type T,
+ * or a failed result with an error of type E.
+ *
+ * @template T - The type of the successful result value.
+ * @template E - The type of the error.
+ */
+export type Result<T, E extends Error> = SuccessResult<T> | FailureResult<E>;
 
-    /**
-     * Construct a Result passing in a value if the result succeeding
-     * or passing in an error specifiying why the result failed.
-     * @param isSuccess true if successful, false if failed
-     * @param value a value to return a succesful result
-     * @param error an error specifying why the result failed
-     */
-    public constructor(isSuccess: boolean, value ? : T, error ? : E) {
-        if (isSuccess && !value) {
-            throw new Error('InvalidOperation: A successful result needs a value');
-        }
+/**
+ * Creates a successful result with a value of type T.
+ *
+ * @template T - The type of the successful result value.
+ * @template E - The type of the error.
+ *
+ * @param {T} value - The value to be returned in the successful result.
+ * @returns {Result<T, E>} A successful result containing the value.
+ */
+export function ok<T, E extends Error>(value: T): Result<T, E> {
+	return {
+		error: undefined,
+		isFailure: false,
+		isSuccess: true,
+		value
+	};
+}
 
-        if (isSuccess && error) {
-            throw new Error('InvalidOperation: A result cannot be successful and contain an error');
-        }
-
-        if (!isSuccess && !error) {
-            throw new Error('InvalidOperation: A failing result needs to contain an error message');
-        }
-
-        this.isSuccess = isSuccess;
-        this.isFailure = !isSuccess;
-        this.error = error;
-        if (value) {
-            this._value = value;
-        }
-
-        Object.freeze(this);
-    }
-
-    public get value(): T | undefined {
-        if (!this.isSuccess) {
-            return undefined;
-        }
-
-        return this._value;
-    }
+/**
+ * Creates a failed result with an error of type E.
+ *
+ * @template T - The type of the successful result value (unused in failure).
+ * @template E - The type of the error.
+ *
+ * @param {E} error - The error to be returned in the failed result.
+ * @returns {Result<T, E>} A failed result containing the error.
+ */
+export function fail<T, E extends Error>(error: E): Result<T, E> {
+	return {
+		error,
+		isFailure: true,
+		isSuccess: false,
+		value: undefined
+	};
 }
