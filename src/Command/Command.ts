@@ -9,7 +9,7 @@ import { Result } from '../Result/Result';
  * A command can execute to return a Result
  * @type R - the type of Result returned after executing
  */
-export interface Command <R extends Result<any, any>> {
+export interface Command <R extends Result<any, any, any>> {
     /**
      * The function to trigger when this command is invoked.
      * It returns a {@link Result} which provides context as to whether the command succeeded or failed to execute.
