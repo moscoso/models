@@ -15,9 +15,13 @@ export class ConstructorFactory<C extends ConstructorIndex> {
      * @returns {InstanceType<C[T]>} the created instance
      */
     public get<T extends keyof C>(type: T, params: ConstructorParams<C[T]>): InstanceType<C[T]> {
-        const Class = this.constructors[type];
-		const name = Class.name;
-        return new Class(name, params);
+		const Class = this.constructors[type.toString()];
+		if (Class) {
+			const name = Class.name;
+			return new Class(name, params);
+		}
+
+		throw new Error(`Cannot construct ${type.toString()} type. Params: ${JSON.stringify(params)}`);
     }
 
     /**
