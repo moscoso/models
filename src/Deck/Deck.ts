@@ -3,8 +3,8 @@ import { shuffle } from '../Utility';
 export class Deck<T> {
 	protected cardList: T[] = [];
 
-	constructor() {
-
+	constructor(cardList: T[] = []) {
+		this.cardList = cardList;
 	}
 
 	shuffle (): T[] {
