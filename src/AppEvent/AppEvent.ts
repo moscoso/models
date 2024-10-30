@@ -24,8 +24,6 @@ export class AppEvent < T, P > {
      * A timestamp that specifies when the event occured
      */
     public readonly timestamp: Date = new Date();
-    /**
-     * The type of event that gives context to what is happening
-     */
+
     public readonly type ?: T;
 }
