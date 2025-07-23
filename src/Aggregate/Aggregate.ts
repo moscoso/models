@@ -1,4 +1,5 @@
 import { AppEvent } from '../AppEvent/AppEvent';
+import { deepCopy } from '../Utility';
 
 /**
  * An aggregate is a single-unit entity composed by a series of state-changing events.
@@ -53,7 +54,7 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
      * @returns the state of the aggregate
      */
     public addEvent(event: E): S {
-        this._events.push(event);
+        this._events.push(deepCopy(event));
         event.aggregateID = this.id;
         event.eventNumber = this._events.length;
         this.currentState = this.reduce(this.state, event);
