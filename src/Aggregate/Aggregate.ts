@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import { AppEvent } from '../AppEvent/AppEvent';
 
 /**
@@ -35,7 +34,7 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
     /**
      * The events that constitute the aggregate
      */
-    protected events: E[] = [];
+    protected _events: E[] = [];
 
     /**
      * An event emitter that a listener can use to react to events
@@ -54,12 +53,17 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
      * @returns the state of the aggregate
      */
     public addEvent(event: E): S {
-        this.events.push(event);
+        this._events.push(event);
         event.aggregateID = this.id;
-        event.eventNumber = this.events.length;
+        event.eventNumber = this._events.length;
         this.currentState = this.reduce(this.state, event);
         return this.currentState;
     }
+
+	/**
+     * Returns a readonly view of the event list to prevent external mutation.
+     */
+	public get events(): readonly E[] { return this._events; }
 
     /**
      * Determines changes to the aggregate's state. It uses the previous state + an event it receives to determine this change.
@@ -82,6 +86,6 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
 	 */
     reset() {
         this.currentState = this.initialState;
-		this.events = [];
+		this._events = [];
     }
 }

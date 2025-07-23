@@ -1,7 +1,7 @@
+import { Aggregate } from './Aggregate';
 import { AppEvent } from '../AppEvent/AppEvent';
 import { Command } from '../Command/Command';
 import { fail, Result } from '../Result/Result';
-import { Aggregate } from './Aggregate';
 
 /**
  * The `CommandDrivenAggregate` class extends the functionality of an `Aggregate` by integrating
@@ -52,7 +52,7 @@ export class CommandDrivenAggregate<
 			if (events.length === 0) {
 				return fail(new Error('Failed to execute command. It returned 0 events which is invalid'), []);
 			}
-			const initialLength = this.events.length;
+			const initialLength = this._events.length;
 			const initialState = this.currentState;
 			try {
 				events.forEach(event => {
@@ -60,7 +60,7 @@ export class CommandDrivenAggregate<
 				});
 			} catch (reason: any) {
 				// In case of an error, revert aggregate to its original state
-				this.events = this.events.slice(0, initialLength);
+				this._events = this._events.slice(0, initialLength);
 				this.currentState = initialState;
 				console.error(reason);
 				return fail(reason, []);
