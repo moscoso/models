@@ -25,12 +25,13 @@ export class ConstructorFactory<C extends ConstructorIndex> {
     }
 
     /**
-     * Checks if a string is a valid class type
+     * Checks if a string is a valid class type and returns the type if found.
      * @param {string} s - The string to check
-     * @returns {boolean} True if the string is a valid class type, otherwise false
+     * @returns {keyof C | undefined} The validated class type (keyof C) if the string is a valid type,
+     * otherwise `undefined`.
      */
-    public hasType(s: string): boolean {
-        return this.listAllTypes().includes(s as keyof C);
+    public getType(s: string): keyof C | undefined {
+        return this.listAllTypes().find(type => s === type);
     }
 
 	/**
