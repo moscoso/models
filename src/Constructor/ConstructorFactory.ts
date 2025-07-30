@@ -24,13 +24,23 @@ export class ConstructorFactory<C extends ConstructorIndex> {
 		throw new Error(`Cannot construct ${type.toString()} type. Params: ${JSON.stringify(params)}`);
     }
 
-    /**
+	/**
      * Checks if a string is a valid class type
      * @param {string} s - The string to check
-     * @returns {boolean} True if the string is a valid class type, otherwise false
+     * @returns {boolean} true if the string is a valid class type, otherwise false
      */
     public hasType(s: string): boolean {
         return this.listAllTypes().includes(s as keyof C);
+    }
+
+    /**
+     * Checks if a string is a valid class type and returns the type if found.
+     * @param {string} s - The string to check
+     * @returns {keyof C | undefined} The validated class type (keyof C) if the string is a valid type,
+     * otherwise `undefined`.
+     */
+    public getType(s: string): keyof C | undefined {
+        return this.listAllTypes().find(type => s === type);
     }
 
 	/**
