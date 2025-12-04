@@ -8,8 +8,9 @@ import { Result } from '../Result/Result';
  * from the objects that actually process the request.
  *
  * @type R - the type of {@link Result} returned after executing
+ * @type P - the type for the parameters required to execute the command
  */
-export interface Command <R extends Result<any, any, any>, P = {}> {
+export interface Command <R extends Result<any, any, any>, P = any> {
 	/** The name of the command */
 	name: string;
 	/** The parameters required to execute the command. */
