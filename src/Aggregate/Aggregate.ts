@@ -18,25 +18,15 @@ import { deepCopy } from '../Utility';
  * @param <S> The interface that represents the current state of the aggregate
  */
 export class Aggregate < E extends AppEvent < string, any >, S > {
-    /**
-     * A unique identifier for the aggregate
-     */
+    /** A unique identifier for the aggregate */
     protected id: string;
-    /**
-     * The initial state of the aggregate
-     */
+    /** The initial state of the aggregate */
     protected initialState: S;
-    /**
-     * The current state of the aggregate
-     */
+    /** The current state of the aggregate */
     protected currentState: S;
-    /**
-     * The reducer used to calculate the state of the aggregate for each new event
-     */
+    /** The reducer used to calculate the state of the aggregate for each new event */
     protected reducer: (event: E, state: S) => S;
-    /**
-     * The events that constitute the aggregate
-     */
+    /** The events that constitute the aggregate */
     protected _events: E[] = [];
 
     constructor(aggregateID: string, initialState: S, reducer: (event: E, state: S) => S) {
