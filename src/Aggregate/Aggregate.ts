@@ -52,9 +52,9 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
      * @returns the state of the aggregate
      */
     public addEvent(event: E): S {
-        this._events.push(deepCopy(event));
         event.aggregateID = this.id;
         event.eventNumber = this._events.length;
+		this._events.push(deepCopy(event));
         this.currentState = this.reduce(this.state, event);
         return this.currentState;
     }
@@ -128,10 +128,6 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
 				console.error(reason);
 				return fail(reason, { events: [], commands: [] });
 			}
-
-			commands?.forEach((command) => {
-				this.executeCommand(command);
-			});
 		}
 
         return result;
