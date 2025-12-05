@@ -92,9 +92,9 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
 		let result;
 		try {
 			result = command.execute();
-		} catch (reason: any) {
-			console.error(reason);
-			return fail(reason, { events: [], commands: [] });
+		} catch (error: any) {
+			console.error(error);
+			return fail(error, { events: [], commands: [] });
 		}
 
 		if (result?.isSuccess) {
@@ -111,12 +111,12 @@ export class Aggregate < E extends AppEvent < string, any >, S > {
 				events.forEach(event => {
 					this.addEvent(event);
 				});
-			} catch (reason: any) {
+			} catch (error: any) {
 				// In case of an error, revert aggregate to its original state
 				this._events = this._events.slice(0, initialLength);
 				this.currentState = initialState;
-				console.error(reason);
-				return fail(reason, { events: [], commands: [] });
+				console.error(error);
+				return fail(error, { events: [], commands: [] });
 			}
 		}
 
