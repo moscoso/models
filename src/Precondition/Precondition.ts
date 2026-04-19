@@ -8,13 +8,17 @@ import { AppError } from '../AppError/AppError';
 export type PreconditionValidator<E extends Error> = (args: any) => E | null;
 
 /**
- * A {@link ConfigurablePreconditionValidator} is a higher order function that uses parameters
+ * A {@link ConfigurablePreconditionValidator} is a higher-order function that uses parameters
  * to configure the validation logic of a {@link PreconditionValidator}.
  *
- * @param params any parameters that will be used to configure the validation logic of the {@link PreconditionValidator}.
+ * @typeParam P - The {@link PreconditionValidator} this function produces.
+ * @typeParam TArgs - A tuple of the configuration parameter types. Defaults to `any[]` for
+ * backward compatibility, but supply an explicit tuple (e.g. `[GamePhase]`) to get full
+ * type safety at the call site.
+ * @param params - The configuration parameters used to build the {@link PreconditionValidator}.
  * @returns A {@link PreconditionValidator} function that can be used to validate prerequisites.
- * */
-export type ConfigurablePreconditionValidator<P extends PreconditionValidator<any>> = (...params: any[]) => P;
+ */
+export type ConfigurablePreconditionValidator<P extends PreconditionValidator<any>, TArgs extends unknown[] = any[]> = (...params: TArgs) => P;
 
 /**
  * Validates that a list of preconditions are met
